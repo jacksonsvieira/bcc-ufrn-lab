@@ -1,4 +1,5 @@
-#include <iostream>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
 
 // n = x + f
 // x >= 0 (dado 0 < f < 1 logo n < x < n+1)
@@ -23,12 +24,11 @@ int floor(float x) {
   }
 }
 
-int main() {
-  std::cout << floor(2.5) << std::endl;
-  std::cout << floor(2.0) << std::endl;
-  std::cout << floor(0.5) << std::endl;
-  std::cout << floor(0.0) << std::endl;
-  std::cout << floor(-1.5) << std::endl;
-  std::cout << floor(-1.0) << std::endl;
-  return 0;
-}
+TEST_CASE("Floor function") {
+  CHECK(floor(2.5) == 2);
+  CHECK(floor(2.0) == 2);
+  CHECK(floor(0.5) == 0);
+  CHECK(floor(0.0) == 0);
+  CHECK(floor(-1.5) == -2);
+  CHECK(floor(-1.0) == -1);
+};
