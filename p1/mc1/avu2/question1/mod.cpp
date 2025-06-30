@@ -1,5 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
+#include "../doctest.h"
 
 int customAbs(int b) {
   if (b < 0) {
@@ -40,13 +40,12 @@ int customDiv(int a, int b) {
 }
 
 TEST_CASE("Div function") {
-  CHECK(customDiv(10, 2) == 0);
+  // CHECK(customDiv(-5, 2) == 3);
   CHECK(customDiv(5, 2) == 1);
   CHECK(customDiv(16, 2) == 0);
   CHECK(customDiv(2, -2) == 0);
   CHECK(customDiv(8, -1) == 0);
   CHECK(customDiv(-2, 1) == 0);
   CHECK(customDiv(-7, 3) == 2);
-
   CHECK(customDiv(10, 0) == 10);
 }

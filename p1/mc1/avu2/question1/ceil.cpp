@@ -1,5 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
+#include "../doctest.h"
 
 // n = x + f
 // x >= 0 (dado 0 < f < 1 logo n < x < n+1)
