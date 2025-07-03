@@ -6,6 +6,12 @@ struct Bezout {
   int y;
 };
 
+// ax + by = gcd(a, b) = gc(b,r)
+// bx′+ry′=gcd(b,r)
+// r=a−bq
+// bx′+(a−bq)y′=gcd(a,b)⇒ay′+b(x′−qy′)=gcd(a,b)
+// x=y′, y=x′−qy
+
 Bezout euclideanExtended(int a, int b, int step = 1) {
   std::cout << "Step " << step << ": gcd(" << a << ", " << b << ")" << std::endl;
   
@@ -26,6 +32,7 @@ Bezout euclideanExtended(int a, int b, int step = 1) {
   int newX = res.y;
   int newY = res.x - q * res.y;
   
+  std::cout << "\n";
   std::cout << "-> Back to Step " << step << ": x = " << newX << ", y = " << newY << std::endl;
   std::cout << "-> Verification: " << a << " * " << newX << " + " << b << " * " << newY << " = " << (a * newX + b * newY) << std::endl;
   

@@ -1,6 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "../doctest.h"
 
+// a = bq + r -> b > 0
+// r > 0 e r < |b|
+
 int customAbs(int b) {
   if (b < 0) {
     b = -b;
@@ -40,9 +43,9 @@ int customDiv(int a, int b) {
 }
 
 TEST_CASE("Div function") {
-  // CHECK(customDiv(-5, 2) == 3);
   CHECK(customDiv(10, 2) == 5);
   CHECK(customDiv(5, 2) == 2);
+  CHECK(customDiv(-5, -2) == 3);
   CHECK(customDiv(16, 2) == 8);
   CHECK(customDiv(2, -2) == -1);
   CHECK(customDiv(8, -1) == -8);

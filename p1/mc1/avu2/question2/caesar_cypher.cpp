@@ -30,7 +30,7 @@ std::string encrypt(std::string word, int k) {
     }
 
     int index_letter = LETTER_INDEX.at(current_char);
-    int new_letter_index = (index_letter + k) % 26;
+    int new_letter_index = (index_letter + k) % 52;
     encrypted_word += LETTERS[new_letter_index];
   }
 
@@ -49,7 +49,7 @@ std::string decrypt(std::string word, int k) {
     }
 
     int index_letter = LETTER_INDEX.at(current_char);
-    int new_letter_index = (index_letter - k + 26) % 26;
+    int new_letter_index = (index_letter - k + 52) % 52;
     decrypted_word += LETTERS[new_letter_index];
   }
 
