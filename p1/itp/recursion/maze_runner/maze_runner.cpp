@@ -1,20 +1,22 @@
 #include <iostream>
 
+struct Position {
+    int x;
+    int y;
+};
 
 int has_path(
     int maze[], 
-    bool path[],
+    bool seen[],
     bool path_solution[],
     int num_cols, 
-    int player_pos_x, 
-    int player_pos_y,
-    int exit_pos_x,
-    int exit_pos_y
+    Position playerPos,
+    Position exitPos
 ){
-    int player_index = player_pos_y*num_cols + player_pos_x;
-    int exit_index = exit_pos_y*num_cols + exit_pos_x;
+    int player_index = playerPos.y*num_cols + playerPos.x;
+    int exit_index = exitPos.y*num_cols + exitPos.x;
 
-    if(player_pos_x < 0 or player_pos_x > num_cols-1 or player_pos_y < 0 or player_pos_y > num_cols-1){
+    if(playerPos.x < 0 or playerPos.x > num_cols-1 or playerPos.y < 0 or playerPos.y > num_cols-1){
         return false;
     }
 
@@ -22,7 +24,7 @@ int has_path(
         return true;
     }
 
-    if(path[player_index]){
+    if(seen[player_index]){
         return false;
     }
 
@@ -30,81 +32,63 @@ int has_path(
         return false;
     }
 
-    path[player_index] = true;
-    
-    bool r1 = has_path(maze, path, path_solution, num_cols, player_pos_x+1, player_pos_y, exit_pos_x, exit_pos_y);
-    bool r2 = has_path(maze, path, path_solution, num_cols, player_pos_x-1, player_pos_y, exit_pos_x, exit_pos_y);
-    bool r3 = has_path(maze, path, path_solution, num_cols, player_pos_x, player_pos_y+1, exit_pos_x, exit_pos_y);
-    bool r4 = has_path(maze, path, path_solution, num_cols, player_pos_x, player_pos_y-1, exit_pos_x, exit_pos_y);
+    seen[player_index] = true;
 
-    if(r1){
-        int solution_player_index = player_pos_y*num_cols + player_pos_x+1;
-        path_solution[solution_player_index] = true;
-        return true;
+    const Position neighbours[4] = {
+        {playerPos.x + 1, playerPos.y},
+        {playerPos.x - 1, playerPos.y},
+        {playerPos.x,     playerPos.y + 1},
+        {playerPos.x,     playerPos.y - 1},
+    };
+
+    for(const Position& next : neighbours){
+        if(has_path(maze, seen, path_solution, num_cols, next, exitPos)){
+            int solution_player_index = next.y*num_cols + playerPos.x;
+            path_solution[solution_player_index] = true;
+            return true;
+        }
     }
 
-    if(r2){
-        int solution_player_index = player_pos_y*num_cols + player_pos_x-1;
-        path_solution[solution_player_index] = true;
-        return true;
-    }
-
-    if(r3){
-        int solution_player_index = (player_pos_y+1)*num_cols + player_pos_x;
-        path_solution[solution_player_index] = true;
-        return true;
-    }
-
-    if(r4){
-        int solution_player_index = (player_pos_y-1)*num_cols + player_pos_x;
-        path_solution[solution_player_index] = true;
-        return true;
-    }
 
     return false;
 }
 
 int main(){
-    int n;
-    int start_pos_x, start_pos_y, exit_pos_x, exit_pos_y;
+    int num_cols;
+    Position playerPos;
+    Position exitPos;
 
-    std::cin >> n; 
+    std::cin >> num_cols; 
 
-    int maze[n*n];
-    bool path[n*n] = {false};
+    int maze[num_cols*num_cols];
+    bool path[num_cols*num_cols] = {false};
 
 
-    for(int i = 0; i < (n*n); i++){
+    for(int i = 0; i < (num_cols*num_cols); i++){
         std::cin >> maze[i];
     }
 
-    std::cin >> start_pos_y >> start_pos_x >> exit_pos_y >> exit_pos_x;
+    std::cin >> playerPos.y >> playerPos.x >> exitPos.y >> exitPos.x;
 
-    int num_cols = n;
-    bool path_solution[n*n] = {false};
-
-    int player_index = start_pos_y*num_cols + start_pos_x;
+    bool path_solution[num_cols*num_cols] = {false};
+    int player_index = playerPos.y*num_cols + playerPos.x;
     path_solution[player_index] = true;
 
     bool has_solution = has_path(
         maze, 
         path,
         path_solution,
-        n,
-        start_pos_x, 
-        start_pos_y,
-        exit_pos_x,
-        exit_pos_y
+        num_cols,
+        playerPos,
+        exitPos
     );
-
-
 
     std::cout << (has_solution ? "YES" : "NO") << "\n";
 
     if(has_solution){
-        for(int i = 0; i < n; i++){
-            for(int k = 0; k < n; k++){
-                int index = i*n + k;
+        for(int i = 0; i < num_cols; i++){
+            for(int k = 0; k < num_cols; k++){
+                int index = i*num_cols + k;
                 std::cout << path_solution[index] << " ";
             }
             std::cout << "\n";
@@ -115,6 +99,6 @@ int main(){
 }
 
 // TODO: Imprimir uma matriz apenas com o caminho feito por exemplo OK
-// TODO: Criar testes automatizados
 // TODO: Refatorar o codigo com principios de orientacao a objetos (& SOLID)
 // TODO: Otimizar performance do codigo utilizando ponteiros e referencias para nao alocar mais memoria na stack
+// TODO: Criar testes automatizados
