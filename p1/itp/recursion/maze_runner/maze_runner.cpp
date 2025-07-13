@@ -98,7 +98,6 @@ int main(){
     return 0;
 }
 
-// TODO: Imprimir uma matriz apenas com o caminho feito por exemplo OK
-// TODO: Refatorar o codigo com principios de orientacao a objetos (& SOLID)
 // TODO: Otimizar performance do codigo utilizando ponteiros e referencias para nao alocar mais memoria na stack
+// TODO: Refatorar o codigo com principios de orientacao a objetos (& SOLID)
 // TODO: Criar testes automatizados
