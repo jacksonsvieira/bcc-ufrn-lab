@@ -46,6 +46,7 @@ Por exemplo, considere o seguinte terreno:
 7 8 4
 </pre>
 
+
 Apenas os pontos das posições (0, 1) e (2, 2) são vales, pois:
 - O ponto (0, 1) com valor 0 é menor que seus vizinhos: 1, 3, 4, 5, 6.
 - O ponto (2, 2) com valor 4 é menor que seus vizinhos: 5, 6, 8.
