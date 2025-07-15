@@ -3,44 +3,55 @@
 #include <iomanip>
 #include <random>
 #include <stdexcept>
+#include <cstring>     
 
 HeightMap::HeightMap(int N)
 {
-    if (N > 0) {
-        size_ = (1 << N) + 1;            
-        h_.assign(size_, std::vector<float>(size_, 0.0f));
-    }
+    if (N > 0) allocate(N);
+}
+
+HeightMap::~HeightMap()
+{
+    delete[] h_;
+}
+
+void HeightMap::allocate(int N)
+{
+    size_ = (1 << N) + 1;             
+    h_    = new float[size_ * size_];
+    std::memset(h_, 0, sizeof(float) * size_ * size_); 
 }
 
 void HeightMap::generate(float roughness)
 {
-    if (size_ == 0)
-        return;
-        // throw std::logic_error("HeightMap not initialised");
+    if (size_ == 0 || !h_)
+        throw std::logic_error("HeightMap not initialised");
 
     initialiseCorners();
 
-    int   step  = size_ - 1;             
-    float scale = step;                  
+    int   step  = size_ - 1;
+    float scale = step;
 
     while (step > 1) {
-        diamondStep(step, scale);       
-        squareStep(step, scale);         
+        diamondStep(step, scale);      
+        squareStep (step, scale);      
         step  /= 2;
-        scale *= roughness;              
+        scale *= roughness;
     }
 }
 
 bool HeightMap::saveToFile(const std::string& filename) const
 {
+    if (!h_) return false;
     std::ofstream out(filename);
     if (!out) return false;
 
-    out << size_ << ' ' << size_ << '\n';
-    out << std::setprecision(6) << std::fixed;
+    out << size_ << ' ' << size_ << '\n'
+        << std::fixed << std::setprecision(6);
 
-    for (const auto& row : h_) {
-        for (float v : row) out << v << ' ';
+    for (int r = 0; r < size_; ++r) {
+        for (int c = 0; c < size_; ++c)
+            out << h_[r * size_ + c] << ' ';
         out << '\n';
     }
     return true;
@@ -49,18 +60,18 @@ bool HeightMap::saveToFile(const std::string& filename) const
 bool HeightMap::loadFromFile(const std::string& filename)
 {
     std::ifstream in(filename);
-    if (!in.is_open()) return false;
+    if (!in) return false;
 
     int r, c;
     in >> r >> c;
-    if (r != c) return false;            
+    if (r != c) return false;
 
+    delete[] h_;                      
     size_ = r;
-    h_.assign(size_, std::vector<float>(size_));
+    h_    = new float[size_ * size_];
 
-    for (int i = 0; i < size_; ++i)
-        for (int j = 0; j < size_; ++j)
-            in >> h_[i][j];
+    for (int i = 0; i < size_ * size_; ++i)
+        in >> h_[i];
 
     return true;
 }
@@ -69,7 +80,7 @@ float HeightMap::getAltitude(int row, int col) const
 {
     if (row < 0 || col < 0 || row >= size_ || col >= size_)
         throw std::out_of_range("Coordinates outside map");
-    return h_[row][col];
+    return h_[row * size_ + col];
 }
 
 void HeightMap::initialiseCorners()
@@ -78,10 +89,10 @@ void HeightMap::initialiseCorners()
     std::default_random_engine eng(rd());
     std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
-    h_[0][0]                = dist(eng);
-    h_[0][size_ - 1]        = dist(eng);
-    h_[size_ - 1][0]        = dist(eng);
-    h_[size_ - 1][size_ -1] = dist(eng);
+    h_[0]                      = dist(eng);                // (0,0)
+    h_[size_ - 1]              = dist(eng);                // (0,size_-1)
+    h_[(size_ - 1) * size_]    = dist(eng);                // (size_-1,0)
+    h_[size_ * size_ - 1]      = dist(eng);                // (size_-1,size_-1)
 }
 
 void HeightMap::diamondStep(int step, float scale)
@@ -90,11 +101,12 @@ void HeightMap::diamondStep(int step, float scale)
 
     for (int y = half; y < size_; y += step) {
         for (int x = half; x < size_; x += step) {
-            float avg = (h_[y - half][x - half] +
-                         h_[y - half][x + half] +
-                         h_[y + half][x - half] +
-                         h_[y + half][x + half]) * 0.25f;
-            h_[y][x] = avg + randDisplacement(scale);
+            float avg = ( h_[(y - half) * size_ + (x - half)] +
+                          h_[(y - half) * size_ + (x + half)] +
+                          h_[(y + half) * size_ + (x - half)] +
+                          h_[(y + half) * size_ + (x + half)] ) * 0.25f;
+
+            h_[y * size_ + x] = avg + randDisplacement(scale);
         }
     }
 }
@@ -104,9 +116,9 @@ void HeightMap::squareStep(int step, float scale)
     const int half = step / 2;
 
     for (int y = 0; y < size_; y += half) {
-        int xStart = ((y / half) % 2) ? 0 : half;
+        int xStart = ((y / half) % 2) ? 0 : half; 
         for (int x = xStart; x < size_; x += step) {
-            h_[y][x] = safeAverage(y, x, half) + randDisplacement(scale);
+            h_[y * size_ + x] = safeAverage(y, x, half) + randDisplacement(scale);
         }
     }
 }
@@ -116,21 +128,22 @@ float HeightMap::safeAverage(int r, int c, int step) const
     float sum = 0.0f;
     int   cnt = 0;
 
-    auto addIfValid = [&](int rr, int cc) {
+    auto add = [&](int rr, int cc) {
         if (rr >= 0 && rr < size_ && cc >= 0 && cc < size_) {
-            sum += h_[rr][cc];
+            sum += h_[rr * size_ + cc];
             ++cnt;
         }
     };
 
-    addIfValid(r - step, c);
-    addIfValid(r + step, c);
-    addIfValid(r, c - step);
-    addIfValid(r, c + step);
+    add(r - step, c);
+    add(r + step, c);
+    add(r, c - step);
+    add(r, c + step);
 
-    return (cnt ? sum / cnt : 0.0f);
+    return cnt ? sum / cnt : 0.0f;
 }
 
+// TODO: This is function is too overengenering should be refactored to a more simple version.
 float HeightMap::randDisplacement(float scale) const
 {
     static thread_local std::mt19937 eng(std::random_device{}());
