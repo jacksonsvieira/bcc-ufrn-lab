@@ -7,6 +7,8 @@ Palette::Palette(){
     quantity = 0;
 }
 
+// TODO: Otimizar parametros por referencia para evitar overload da memoria.
+
 Palette::Palette(
     int inputQuantity,
     Color inputColors[],
@@ -22,11 +24,14 @@ Palette::Palette(
     
 }
 
-void Palette::loadFromFile(const std::string filePath) {
+int Palette::loadFromFile(const std::string &filePath) {
 
     std::ifstream file(filePath);
-    // TODO: handle expceptions like cannot read the file
 
+    if(!file.is_open()){
+        std::cerr << "Error: Unable to open file!" << std::endl;
+        return 1;
+    }
 
     file >> quantity;
 
@@ -37,6 +42,9 @@ void Palette::loadFromFile(const std::string filePath) {
         values[i] = val;
         colors[i] = c;
     }
+
+    file.close();
+    return 0;
 }
 
 Color Palette::getColor(int value) {

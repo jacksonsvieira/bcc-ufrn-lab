@@ -2,9 +2,9 @@
 #include <fstream>
 
 struct Color {
-    u_int8_t r;
-    u_int8_t g;
-    u_int8_t b;
+    u_int8_t r = 0;
+    u_int8_t g = 0;
+    u_int8_t b = 0;
 };
 
 class Palette {
@@ -26,6 +26,6 @@ class Palette {
         int getQuantity();
         Color getColor(int value);
 
-        void loadFromFile(const std::string filePath);
+        int loadFromFile(const std::string &filePath);
 
 };

@@ -37,7 +37,7 @@ TEST_CASE("Tests to pallete using class constructor") {
 TEST_CASE("Tests to pallete initializing with a file stream") {
     auto my_palette = Palette();
 
-    const std::string FILE_PATH = "/home/jackson/hobby/bcc-ufrn-lab/p1/itp/e3/test/data/palette.txt";
+    const std::string FILE_PATH = "./test/data/palette.txt";
 
     my_palette.loadFromFile(FILE_PATH);
 
