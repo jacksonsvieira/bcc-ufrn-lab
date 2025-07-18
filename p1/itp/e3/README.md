@@ -39,9 +39,14 @@ src/
 - Linux ;-;
 - C++ compiler (g++)
 
+### Clone 
+```bash
+git clone https://github.com/jacksonsvieira/bcc-ufrn-lab.git
+cd bcc-ufrn-lab/p1/itp/e3
+```
+
 ### Compilation
 ```bash
-cd src
 g++ -std=c++17 -o heightmap main.cpp map.cpp image.cpp palette.cpp
 ./heightmap
 ```
