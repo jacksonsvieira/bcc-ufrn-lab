@@ -41,6 +41,7 @@ src/
 
 ### Compilation
 ```bash
+cd src
 g++ -std=c++17 -o heightmap main.cpp map.cpp image.cpp palette.cpp
 ./heightmap
 ```
