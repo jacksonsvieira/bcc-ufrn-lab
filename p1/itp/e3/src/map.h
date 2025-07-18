@@ -12,7 +12,7 @@ public:
     int   rows() const { return size_; }
     int   cols() const { return size_; }
 
-    Image toImage(Palette pallete);
+    Image toImage(Palette pallete, bool shadow = false);
     bool  saveToFile(const std::string& filename) const;
     bool  loadFromFile(const std::string& filename);
 

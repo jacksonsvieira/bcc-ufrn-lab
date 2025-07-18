@@ -168,7 +168,7 @@ float HeightMap::randDisplacement(float scale) const
 }
 
 
-Image HeightMap::toImage(Palette palette){
+Image HeightMap::toImage(Palette palette, bool shadow) {
     auto aImage = Image(size_, size_);
 
     for (int i = 0; i < (size_ * size_); i++)
@@ -179,12 +179,14 @@ Image HeightMap::toImage(Palette palette){
         int idx       = y * size_ + x;
         Color pixelColor     = palette.getColor(h_[idx]);
 
-        if (x > 0 && y > 0) {
-            int idxNW = (y - 1) * size_ + (x - 1);
-            if (h_[idxNW] > h_[idx]) {
-                pixelColor.r = static_cast<uint8_t>(pixelColor.r * 0.5f);
-                pixelColor.g = static_cast<uint8_t>(pixelColor.g * 0.5f);
-                pixelColor.b = static_cast<uint8_t>(pixelColor.b * 0.5f);
+        if(shadow){
+            if (x > 0 && y > 0) {
+                int idxNW = (y - 1) * size_ + (x - 1);
+                if (h_[idxNW] > h_[idx]) {
+                    pixelColor.r = static_cast<uint8_t>(pixelColor.r * 0.5f);
+                    pixelColor.g = static_cast<uint8_t>(pixelColor.g * 0.5f);
+                    pixelColor.b = static_cast<uint8_t>(pixelColor.b * 0.5f);
+                }
             }
         }
 

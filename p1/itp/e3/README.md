@@ -69,12 +69,14 @@ setted to use the numbers between 0 and 1.
 
 ## 📊 Results
 
-<!-- ![Minimap](./results/minimap.ppm)
-![Minimap Gray](./results/minimap_gray.ppm)
-![Minimap Gray Shadow](./results/minimap_gray_shadow.ppm)
-![Minimap Brazil](./results/minimap_brazil.ppm)
-![Minimap Brazil Shadow](./results/minimap_brazil_shadow.ppm)
-![Minimap Shadow](./results/minimap_shadow.ppm) -->
+N=10
+
+![Minimap Original Palette](./src/results/minimap_original.png)
+![Minimap Original Palette With Shadow](./src/results/minimap_original_shadow.png)
+![Minimap Gray Palette](./src/results/minimap_gray.png)
+![Minimap Gray Palette With Shadow](./src/results/minimap_gray_shadow.png)
+![Minimap Brazil Palette](./src/results/minimap_brazil.png)
+![Minimap Brazil Shadow With Shadow](./src/results/minimap_brazil_shadow.png)
 
 ## 🔬 Technical Details
 
