@@ -1,18 +1,17 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
-#include "pallete.h"
+#include "palette.h"
 
 Palette::Palette(){
     quantity = 0;
 }
 
-// TODO: Otimizar parametros por referencia para evitar overload da memoria.
-
 Palette::Palette(
     int inputQuantity,
     Color inputColors[],
-    int inputValues[]
+    float inputValues[]
 ) {
     this->quantity = inputQuantity;
 
@@ -36,27 +35,51 @@ int Palette::loadFromFile(const std::string &filePath) {
     file >> quantity;
 
     for (int i = 0; i < quantity; ++i) {
-        int val;
-        Color c;
-        file >> val >> (int&)c.r >> (int&)c.g >> (int&)c.b;
-        values[i] = val;
-        colors[i] = c;
+        float val;
+        int r, g, b;
+        if (!(file >> val >> r >> g >> b)) {
+            std::cerr << "Erro na linha " << (i+1) << "\n";
+            break;
+        }
+
+        values[i]       = val;
+        colors[i].r     = static_cast<uint8_t>(r);
+        colors[i].g     = static_cast<uint8_t>(g);
+        colors[i].b     = static_cast<uint8_t>(b);
     }
 
     file.close();
     return 0;
 }
 
-Color Palette::getColor(int value) {
-    int index = 0;
+// TODO: Make tests
+Color Palette::getColor(float value) const {
+    value = std::clamp(value, 0.0f, 1.0f);
 
-    while(value >= values[index] && index < quantity){
-        index++;
+    if (quantity <= 1)
+        return colors[0];
+    int idx = 0;
+    for (int i = 1; i < quantity; ++i) {
+        if (value < values[i]) {
+            break;
+        }
+        idx = i;
     }
 
-    return colors[index-1];
+    return colors[idx];
 }
 
 int Palette::getQuantity(){
     return quantity;
+}
+
+void Palette::print() {
+    std::cout << "Palette: " << quantity << " colors\n";
+    for (int i = 0; i < quantity; ++i) {
+        std::cout << "Color " << i << ": "
+                  << static_cast<int>(colors[i].r) << ", "
+                  << static_cast<int>(colors[i].g) << ", "
+                  << static_cast<int>(colors[i].b) << " (Value: " 
+                  << values[i] << ")\n";
+    }
 }

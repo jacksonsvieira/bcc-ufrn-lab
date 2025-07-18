@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "pallete.h"
+#include "palette.h"
 
 class Image {
     int width, height;

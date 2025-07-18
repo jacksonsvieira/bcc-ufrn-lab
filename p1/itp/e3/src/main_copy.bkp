@@ -1,0 +1,66 @@
+#include <iostream>
+
+
+int posMap(int y, int x, int size){
+    return size*y + x;
+}
+
+int diamondStep(int *arr, int chunk, int size){
+    int half = chunk / 2;
+    for (int y = half; y < size; y += chunk)
+    {
+        for (int x = half; x < size; x += chunk)
+        {
+            int left_top_corner = arr[posMap(y-half, x-half, size)];
+            int right_top_corner = arr[posMap(y-half, x+half, size)];
+            int left_bottom_corner = arr[posMap(y+half, x-half, size)];
+            int right_bottom_corner = arr[posMap(y+half, x+half, size)];
+
+            int mediam = (left_top_corner + right_top_corner + left_bottom_corner + right_bottom_corner) / 4;
+            int half = chunk / 2;
+
+            int i = posMap(x, y, size);
+            arr[i] = mediam;
+        }
+    }
+     
+    return 0;
+}
+
+int squareStep(int *arr, int chunk, int size){
+    return;
+}
+
+void printMap(int *arr, int size){
+    for (int i = 0; i < size; i++)
+    {
+        for (int k = 0; k < size; k++)
+        {
+            std::cout << arr[i*size + k] << " ";
+        }
+
+        std::cout << "\n";
+    }
+}
+
+int arrPos(int x, int y, int size){
+    return y*size + x;
+}
+
+
+int main(){
+    int MAP_SIZE = 2 + 1;
+    int chunk = MAP_SIZE - 1;
+
+    int map[MAP_SIZE*MAP_SIZE] = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
+
+    map[0] = 8;
+    map[chunk] = 4;
+    map[chunk*MAP_SIZE] = 3;
+    map[chunk*MAP_SIZE + chunk] = 2;
+
+    diamondStep(map, chunk, MAP_SIZE);
+    printMap(map, MAP_SIZE);
+
+    return 0;
+}

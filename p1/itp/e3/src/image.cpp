@@ -23,7 +23,24 @@ void Image::setColor(int y, int x, const Color &new_color){
     pixels[index] = new_color;
 }
 
-
 int Image::saveToPPM(const std::string &filePath){
+    std::ofstream out(filePath);
+
+    out << "P3" << "\n";
+    out << width << " " << height << "\n";
+    out << 255 << "\n";
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            Color color = getColor(y, x);
+            out << static_cast<int>(color.r) << " "
+                << static_cast<int>(color.g) << " "
+                << static_cast<int>(color.b) << " ";            
+        }
+        out << "\n";
+    }
+
     return 0;
 }
